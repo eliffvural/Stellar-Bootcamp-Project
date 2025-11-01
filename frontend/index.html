@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Calculator - Soroban Smart Contract Demo</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@stellar/freighter-api@2.0.1/dist/freighter-api.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔢 Stellar Calculator</h1>
+            <p class="subtitle">Soroban Smart Contract ile Blockchain Üzerinde Hesaplama</p>
+        </header>
+
+        <div class="wallet-section">
+            <div class="wallet-info" id="walletInfo">
+                <button class="btn btn-primary" id="connectWalletBtn">Cüzdan Bağla</button>
+            </div>
+            <div class="contract-id-section">
+                <label for="contractIdInput">Contract ID:</label>
+                <input type="text" id="contractIdInput" class="input-field contract-input" placeholder="Enter deployed contract ID">
+                <small>Örnek: CADDRR2... veya URL'e ?contract=CADDRR2... ekleyin</small>
+            </div>
+        </div>
+
+        <div class="calculator-container">
+            <div class="display-section">
+                <div class="current-value-box">
+                    <label>Mevcut Değer</label>
+                    <div class="value-display" id="currentValue">0</div>
+                </div>
+            </div>
+
+            <div class="operations-grid">
+                <div class="operation-group">
+                    <h3>🏁 Temel İşlemler</h3>
+                    <div class="operation-row">
+                        <input type="number" id="initValue" placeholder="Başlangıç değeri" class="input-field">
+                        <button class="btn btn-secondary" onclick="initializeContract()">Initialize</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-secondary" onclick="getCurrentValue()">Get Value</button>
+                        <button class="btn btn-danger" onclick="resetValue()">Reset</button>
+                    </div>
+                </div>
+
+                <div class="operation-group">
+                    <h3>➕➖ Aritmetik İşlemler</h3>
+                    <div class="operation-row">
+                        <input type="number" id="addValue" placeholder="Değer" class="input-field">
+                        <button class="btn btn-success" onclick="addValue()">Add</button>
+                    </div>
+                    <div class="operation-row">
+                        <input type="number" id="subtractValue" placeholder="Değer" class="input-field">
+                        <button class="btn btn-warning" onclick="subtractValue()">Subtract</button>
+                    </div>
+                    <div class="operation-row">
+                        <input type="number" id="multiplyValue" placeholder="Değer" class="input-field">
+                        <button class="btn btn-success" onclick="multiplyValue()">Multiply</button>
+                    </div>
+                    <div class="operation-row">
+                        <input type="number" id="divideValue" placeholder="Değer" class="input-field">
+                        <button class="btn btn-warning" onclick="divideValue()">Divide</button>
+                    </div>
+                    <div class="operation-row">
+                        <input type="number" id="moduloValue" placeholder="Değer" class="input-field">
+                        <button class="btn btn-secondary" onclick="moduloValue()">Modulo</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-success" onclick="incrementValue()">Increment +</button>
+                        <button class="btn btn-warning" onclick="decrementValue()">Decrement -</button>
+                    </div>
+                </div>
+
+                <div class="operation-group">
+                    <h3>🧮 Matematiksel Fonksiyonlar</h3>
+                    <div class="operation-row">
+                        <input type="number" id="powerExponent" placeholder="Üs" class="input-field">
+                        <button class="btn btn-info" onclick="powerValue()">Power</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-info" onclick="absValue()">Absolute Value</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="log-section">
+                <h3>📋 İşlem Geçmişi</h3>
+                <div class="log-container" id="logContainer">
+                    <p class="log-empty">Henüz işlem yapılmadı</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Built with ❤️ for Stellar Bootcamp</p>
+            <p class="contract-info" id="contractInfo">Contract: Not deployed</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
