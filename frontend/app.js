@@ -45,18 +45,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Check if Freighter is installed
 function checkFreighter() {
-    if (!window.freighterApi) {
-        console.error('Freighter is not installed!');
-        showLog('⚠️ Please install Freighter wallet extension from freighter.app', 'error');
-        showLog('📚 Visit: https://freighter.app', 'error');
-    } else {
-        showLog('✅ Freighter wallet detected', 'success');
-    }
+    // Wait for Freighter to load
+    setTimeout(() => {
+        if (!window.freighterApi) {
+            console.error('Freighter is not installed!');
+            showLog('⚠️ Please install Freighter wallet extension from freighter.app', 'error');
+            showLog('📚 Visit: https://freighter.app', 'error');
+        } else {
+            showLog('✅ Freighter wallet detected', 'success');
+        }
+    }, 500);
 }
 
 // Connect Freighter wallet
 async function connectWallet() {
     try {
+        // Check if Freighter API is available
+        if (!window.freighterApi) {
+            showLog('❌ Freighter wallet extension not found. Please install it.', 'error');
+            showLog('📦 Get it from: https://freighter.app', 'error');
+            return;
+        }
+        
         // Check if already connected
         const { isInstalled } = await window.freighterApi.isInstalled();
         if (!isInstalled) {
