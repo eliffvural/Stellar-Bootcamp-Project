@@ -60,6 +60,73 @@ impl Contract {
         env.storage().instance().set(&COUNTER_KEY, &0i64);
         0
     }
+
+    /// Multiply the counter by a value
+    pub fn multiply(env: Env, value: i64) -> i64 {
+        let current = Self::get_value(env.clone());
+        let new_value = current.saturating_mul(value);
+        env.storage().instance().set(&COUNTER_KEY, &new_value);
+        new_value
+    }
+
+    /// Divide the counter by a value
+    pub fn divide(env: Env, value: i64) -> i64 {
+        if value == 0 {
+            panic!("Division by zero");
+        }
+        let current = Self::get_value(env.clone());
+        let new_value = current / value;
+        env.storage().instance().set(&COUNTER_KEY, &new_value);
+        new_value
+    }
+
+    /// Raise the counter to the power of a value
+    pub fn power(env: Env, exponent: i64) -> i64 {
+        let current = Self::get_value(env.clone());
+        
+        // Handle edge cases
+        if exponent < 0 {
+            panic!("Negative exponent not supported for integer power");
+        }
+        if exponent == 0 {
+            let new_value = 1;
+            env.storage().instance().set(&COUNTER_KEY, &new_value);
+            return new_value;
+        }
+        if current == 0 {
+            return 0;
+        }
+        
+        // Calculate power using repeated multiplication
+        let mut result = current;
+        let mut exp = exponent - 1;
+        while exp > 0 {
+            result = result.saturating_mul(current);
+            exp -= 1;
+        }
+        
+        env.storage().instance().set(&COUNTER_KEY, &result);
+        result
+    }
+
+    /// Get the absolute value
+    pub fn abs(env: Env) -> i64 {
+        let current = Self::get_value(env.clone());
+        let new_value = current.abs();
+        env.storage().instance().set(&COUNTER_KEY, &new_value);
+        new_value
+    }
+
+    /// Get the modulo (remainder) of counter divided by a value
+    pub fn modulo(env: Env, value: i64) -> i64 {
+        if value == 0 {
+            panic!("Modulo by zero");
+        }
+        let current = Self::get_value(env.clone());
+        let new_value = current % value;
+        env.storage().instance().set(&COUNTER_KEY, &new_value);
+        new_value
+    }
 }
 
 mod test;
