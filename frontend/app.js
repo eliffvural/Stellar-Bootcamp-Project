@@ -45,46 +45,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Check if Freighter is installed
 function checkFreighter() {
-    // Wait for Freighter to load
-    setTimeout(() => {
-        if (!window.freighterApi) {
-            console.error('Freighter is not installed!');
-            showLog('⚠️ Please install Freighter wallet extension from freighter.app', 'error');
-            showLog('📚 Visit: https://freighter.app', 'error');
-        } else {
-            showLog('✅ Freighter wallet detected', 'success');
+    // Check multiple times as extension may load after page
+    let attempts = 0;
+    const maxAttempts = 5;
+    
+    const checkInterval = setInterval(() => {
+        attempts++;
+        const warningDiv = document.getElementById('freighterWarning');
+        
+        // Check multiple possible API paths
+        const freighterApi = window.freighterApi || window.freighter || 
+                            (window.document && window.document.freighterApi);
+        
+        if (freighterApi) {
+            // Store the API reference
+            if (!window.freighterApi && freighterApi) {
+                window.freighterApi = freighterApi;
+            }
+            
+            clearInterval(checkInterval);
+            console.log('✅ Freighter wallet detected!', freighterApi);
+            showLog('✅ Freighter wallet algılandı', 'success');
+            if (warningDiv) {
+                warningDiv.style.display = 'none';
+            }
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkInterval);
+            console.error('Freighter is not installed or not loaded yet!');
+            console.log('Available window properties:', Object.keys(window).filter(k => k.toLowerCase().includes('freight')));
+            showLog('⚠️ Freighter wallet extension bulunamadı!', 'error');
+            showLog('💡 Extension yüklüyse sayfayı yenileyin (F5)', 'info');
+            showLog('📥 Yüklü değilse: https://freighter.app', 'error');
+            if (warningDiv) {
+                warningDiv.style.display = 'block';
+            }
         }
-    }, 500);
+    }, 500); // Check every 500ms
 }
 
 // Connect Freighter wallet
 async function connectWallet() {
     try {
-        // Check if Freighter API is available
-        if (!window.freighterApi) {
-            showLog('❌ Freighter wallet extension not found. Please install it.', 'error');
-            showLog('📦 Get it from: https://freighter.app', 'error');
+        // Check if Freighter API is available (try multiple paths)
+        let freighterApi = window.freighterApi || window.freighter;
+        
+        if (!freighterApi) {
+            showLog('❌ Freighter wallet extension bulunamadı!', 'error');
+            showLog('💡 Extension yüklüyse sayfayı yenileyin (F5)', 'info');
+            showLog('📦 Yüklü değilse: https://freighter.app', 'error');
             return;
         }
         
         // Check if already connected
-        const { isInstalled } = await window.freighterApi.isInstalled();
+        const { isInstalled } = await freighterApi.isInstalled();
         if (!isInstalled) {
-            showLog('Freighter is not installed! Please install it first.', 'error');
+            showLog('Freighter yüklü değil! Lütfen yükleyin.', 'error');
             return;
         }
         
-        const { isConnected: connected } = await window.freighterApi.isConnected();
+        const { isConnected: connected } = await freighterApi.isConnected();
         
         if (!connected) {
-            const response = await window.freighterApi.setAllowed();
+            const response = await freighterApi.setAllowed();
             if (!response) {
-                showLog('Wallet connection refused', 'error');
+                showLog('Cüzdan bağlantısı reddedildi', 'error');
                 return;
             }
         }
         
-        const { publicKey } = await window.freighterApi.getPublicKey();
+        const { publicKey } = await freighterApi.getPublicKey();
         
         isConnected = true;
         
@@ -131,11 +160,18 @@ async function callContract(functionName, ...args) {
     try {
         showLog(`🔄 Calling ${functionName}...`, 'info');
         
+        // Get Freighter API
+        const freighterApi = window.freighterApi || window.freighter;
+        if (!freighterApi) {
+            showLog('❌ Freighter API bulunamadı!', 'error');
+            return null;
+        }
+        
         // Get network details
-        const { networkDetails } = await window.freighterApi.getNetworkDetails();
+        const { networkDetails } = await freighterApi.getNetworkDetails();
         
         // Use Freighter to call the contract
-        const result = await window.freighterApi.invoke({
+        const result = await freighterApi.invoke({
             contractAddress: CONTRACT_CONFIG.contractId,
             method: functionName,
             args: args.map(arg => ({

@@ -100,6 +100,31 @@ body {
     font-style: italic;
 }
 
+.freighter-warning {
+    margin-top: 15px;
+    background: linear-gradient(135deg, #F59E0B, #EF4444);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: pulse 2s infinite;
+}
+
+.freighter-warning p {
+    margin: 10px 0;
+    color: var(--text-primary);
+}
+
+.freighter-warning a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.freighter-warning a:hover {
+    opacity: 0.8;
+}
+
 .wallet-address {
     font-family: 'Courier New', monospace;
     background: var(--bg-dark);
