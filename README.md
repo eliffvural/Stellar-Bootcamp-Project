@@ -1,263 +1,239 @@
-# 🌟 Stellar Calculator Project
+# Stellar Calculator Platform
 
-Soroban blockchain üzerinde çalışan tam fonksiyonlu hesap makinesi projesi. Smart contract backend + Modern web frontend.
+A fully on-chain calculator platform built on Stellar/Soroban. Users can perform mathematical operations, track values, and manage calculations — all on-chain with no local dependencies.
 
-## 📦 Proje İçeriği
+## 🎯 Project Overview
 
-Bu proje iki ana bileşenden oluşur:
+This is a hackathon-ready implementation featuring:
 
-1. **📜 Smart Contract Backend** (`calculator/`) - Rust ile yazılmış Soroban contract'ı
-2. **🎨 Web Frontend** (`frontend/`) - HTML/CSS/JavaScript ile modern web arayüzü
+- **Calculator Contract**: Perform 12 mathematical operations on-chain
+- **Modern Frontend**: HTML/CSS/JavaScript frontend with Freighter wallet integration
+- **Real-time Tracking**: Track calculation history and current values
+- **Secure Operations**: Built-in overflow protection and error handling
 
-## 🚀 Hızlı Başlangıç
+## 🚀 Deployment Guide
 
-### Gereksinimler
+### Contract IDs
 
-- **Rust** 1.70+ 
-- **Stellar CLI Tools** 
-- **Freighter Wallet** extension
-- Modern web browser (Chrome, Firefox, Safari, Edge)
+| Contract | Contract ID | Status |
+|----------|-------------|--------|
+| Calculator | `CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC` | ✅ Deployed & Ready |
 
-### Kurulum
+**Explorer links:**
+- Calculator: [https://stellar.expert/explorer/testnet/contract/CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC](https://stellar.expert/explorer/testnet/contract/CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC)
 
-```bash
-# 1. Projeyi klonlayın
-git clone <repository-url>
-cd Stellar-Bootcamp-Project
+### Environment Variables
 
-# 2. Contract'ı build edin
-cd calculator/contracts/calculator
-stellar contract build
+Frontend uses URL parameters or localStorage for contract configuration. You can also create a `frontend/.env` file (optional):
 
-# 3. Testleri çalıştırın
-cargo test
-
-# 4. Contract'ı deploy edin
-stellar contract deploy --wasm target/wasm32v1-none/release/calculator.wasm --network testnet
-
-# 5. Contract ID'yi kopyalayın
-# Deploy sonrası çıkan ID'yi kaydedin
+```env
+VITE_CONTRACT_ID=CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC
+VITE_NETWORK=testnet
+VITE_RPC_URL=https://soroban-testnet.stellar.org
 ```
 
-### Frontend'i Çalıştırma
+After any change, restart the frontend server:
 
 ```bash
-# Backend kök dizinine dönün
-cd ../../..
-
-# Frontend'i açın
 cd frontend
-
-# Basit HTTP server başlatın
 python -m http.server 8000
-# VEYA
+# or
 npx serve .
-# VEYA
-php -S localhost:8000
-
-# Tarayıcıda açın
-# http://localhost:8000
 ```
 
-## 📚 Detaylı Dokümantasyon
+## 📦 Deployment Steps
 
-### Smart Contract
+1. **Build contracts**: 
+   ```bash
+   cd calculator/contracts/calculator
+   stellar contract build
+   ```
 
-[calculator/README.md](calculator/README.md) - Contract dokümantasyonu, fonksiyonlar, testler
+2. **Run tests**:
+   ```bash
+   cargo test
+   ```
 
-**Özellikler:**
-- ✅ 12 matematik fonksiyonu
-- ✅ 17 comprehensive test
-- ✅ Error handling
-- ✅ Overflow protection
-- ✅ Gas optimized
+3. **Deploy contract using Stellar CLI** (see below)
 
-### Web Frontend
+4. **Update frontend with contract ID**:
+   - Enter contract ID in the frontend input field: `CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC`
+   - Or use URL parameter: `http://localhost:8000/?contract=CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC`
 
-[frontend/README.md](frontend/README.md) - Frontend dokümantasyonu, kurulum, kullanım
+5. **Start frontend**:
+   ```bash
+   cd frontend
+   python -m http.server 8000
+   ```
 
-**Özellikler:**
-- ✅ Modern UI/UX
-- ✅ Freighter wallet entegrasyonu
-- ✅ Responsive design
-- ✅ Real-time işlem logları
-- ✅ Mobile friendly
+## Example CLI Commands
 
-## 🏗️ Proje Yapısı
+### Deploy Calculator Contract:
 
-```
-Stellar-Bootcamp-Project/
-│
-├── calculator/                    # Smart Contract Backend
-│   ├── contracts/
-│   │   └── calculator/
-│   │       ├── src/
-│   │       │   ├── lib.rs        # Contract kodu
-│   │       │   └── test.rs       # Test dosyaları
-│   │       ├── Cargo.toml
-│   │       └── Makefile
-│   ├── Cargo.toml
-│   └── README.md
-│
-├── frontend/                      # Web Frontend
-│   ├── index.html                 # Ana HTML
-│   ├── styles.css                 # Stil dosyası
-│   ├── app.js                     # JavaScript mantığı
-│   └── README.md                  # Frontend dokümantasyonu
-│
-└── README.md                      # Bu dosya
+**Testnet:**
+```bash
+cd calculator/contracts/calculator
+stellar contract deploy \
+  --wasm ..\..\target\wasm32v1-none\release\calculator.wasm \
+  --source-account YOUR_SECRET_KEY \
+  --network testnet
 ```
 
-## ✨ Özellikler
+**With Stellar Laboratory (signing):**
+```bash
+stellar contract deploy \
+  --wasm ..\..\target\wasm32v1-none\release\calculator.wasm \
+  --source-account temp \
+  --network testnet \
+  --sign-with-lab
+```
 
-### Smart Contract Fonksiyonları
+**Local:**
+```bash
+stellar contract deploy \
+  --wasm ..\..\target\wasm32v1-none\release\calculator.wasm \
+  --source-account YOUR_SECRET_KEY \
+  --local
+```
 
-| Fonksiyon | Açıklama | Parametreler |
-|-----------|----------|--------------|
-| `initialize` | Başlangıç değeri | `i64` |
-| `get_value` | Mevcut değer | - |
-| `reset` | Sıfırla | - |
-| `increment` | +1 | - |
-| `decrement` | -1 | - |
-| `add` | Toplama | `i64` |
-| `subtract` | Çıkarma | `i64` |
-| `multiply` | Çarpma | `i64` |
-| `divide` | Bölme | `i64` |
-| `modulo` | Mod | `i64` |
-| `power` | Üs | `i64` |
-| `abs` | Mutlak değer | - |
+### Initialize Calculator:
 
-### Frontend Özellikleri
+The calculator contract doesn't require initialization. You can start using it immediately after deployment.
 
-- 🎨 Modern gradient tasarım
-- 💳 Freighter wallet entegrasyonu
-- 📊 Real-time value display
-- 📋 İşlem geçmişi
-- 🔄 Smooth animasyonlar
-- 📱 Responsive layout
+**Set initial value:**
+```bash
+stellar contract invoke \
+  --id CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC \
+  --source-account YOUR_SECRET_KEY \
+  --network testnet \
+  -- initialize --init_value 10
+```
 
-## 🧪 Testler
+### Example Contract Invocations:
 
+**Get current value:**
+```bash
+stellar contract invoke \
+  --id CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC \
+  --source-account YOUR_SECRET_KEY \
+  --network testnet \
+  -- get_value
+```
+
+**Add value:**
+```bash
+stellar contract invoke \
+  --id CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC \
+  --source-account YOUR_SECRET_KEY \
+  --network testnet \
+  -- add --value 5
+```
+
+**Multiply:**
+```bash
+stellar contract invoke \
+  --id CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC \
+  --source-account YOUR_SECRET_KEY \
+  --network testnet \
+  -- multiply --value 3
+```
+
+**Power (exponentiation):**
+```bash
+stellar contract invoke \
+  --id CCZOQPRYXTGACXCHBDZQUBDHPIVMCI7UKML37UIZLFCVMU2EGW5MBSNC \
+  --source-account YOUR_SECRET_KEY \
+  --network testnet \
+  -- power --exponent 2
+```
+
+## 🛠️ Troubleshooting
+
+- **Make sure you have enough XLM in your account** for transaction fees
+- **Check that WASM files were built successfully**: Verify `calculator/target/wasm32v1-none/release/calculator.wasm` exists
+- **Verify network connection to testnet**: Test with `stellar contract read` command
+- **Check contract IDs and admin addresses**: Ensure contract ID is correct in frontend
+- **Restart frontend after updating contract ID**: Clear browser cache if needed
+- **Freighter wallet not detected**: Install [Freighter extension](https://freighter.app) and refresh page
+- **Contract calls failing**: Verify you're connected to the correct network (testnet/mainnet/local)
+
+## 📊 Contract Functions
+
+| Function | Description | Parameters |
+|----------|-------------|------------|
+| `initialize` | Set initial value | `init_value: i64` |
+| `get_value` | Get current value | - |
+| `reset` | Reset to zero | - |
+| `increment` | Add 1 | - |
+| `decrement` | Subtract 1 | - |
+| `add` | Add value | `value: i64` |
+| `subtract` | Subtract value | `value: i64` |
+| `multiply` | Multiply by value | `value: i64` |
+| `divide` | Divide by value | `value: i64` |
+| `modulo` | Modulo operation | `value: i64` |
+| `power` | Raise to power | `exponent: i64` |
+| `abs` | Absolute value | - |
+
+## 🔐 Security Features
+
+- ✅ Integer overflow protection (saturating arithmetic)
+- ✅ Division by zero checks
+- ✅ Modulo by zero checks
+- ✅ Negative exponent checks
+- ✅ Graceful error handling
+
+## 📈 Build Information
+
+- **Wasm Hash**: `9b64c5b67a8b8bda2a85ee330de778fcfd053b7a847d3ebb8cd97ed1f075ef97`
+- **Wasm Size**: 3KB
+- **Exported Functions**: 12
+- **Test Coverage**: 17/17 tests passed
+- **Soroban SDK**: 23.0.2
+
+## 🧪 Testing
+
+Run tests:
 ```bash
 cd calculator/contracts/calculator
 cargo test
 ```
 
-**Test Sonuçları:**
-- ✅ 17/17 test passed
-- ✅ %100 fonksiyon kapsamı
-- ✅ Error handling testleri
-- ✅ Edge case testleri
+**Test Results:**
+- ✅ 17/17 tests passed
+- ✅ 100% function coverage
+- ✅ Error handling tests included
+- ✅ Edge case tests included
 
-## 🔐 Güvenlik
+## 📝 License
 
-### Contract Güvenlik Özellikleri
+MIT
 
-- ✅ Integer overflow koruması (saturating aritmetik)
-- ✅ Division by zero kontrolleri
-- ✅ Modulo by zero kontrolleri
-- ✅ Negatif üs kontrolleri
-- ✅ Panic yerine graceful error handling
+## 🤝 Contributing
 
-### Frontend Güvenlik
+Contributions welcome!
 
-- ✅ Freighter wallet doğrulaması
-- ✅ Input validation
-- ✅ XSS protection
-- ✅ Safe contract call handling
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📊 Build Bilgileri
+## 🔗 Useful Links
 
-**Contract:**
-- **Wasm Hash**: 9b64c5b67a8b8bda2a85ee330de778fcfd053b7a847d3ebb8cd97ed1f075ef97
-- **Exported Functions**: 12
-- **Build Status**: ✅ Success
-
-**Frontend:**
-- **Bundle Size**: ~50KB
-- **Browser Support**: Modern browsers
-- **Network Support**: Local, Testnet, Mainnet
-
-## 🚦 Kullanım Senaryoları
-
-### 1. Local Development
-
-```bash
-# Local network başlat
-stellar laboratory
-
-# Contract deploy
-stellar contract deploy --wasm calculator/target/wasm32v1-none/release/calculator.wasm --local
-
-# Frontend çalıştır
-cd frontend && python -m http.server 8000
-```
-
-### 2. Testnet Deployment
-
-```bash
-# Contract deploy
-stellar contract deploy --wasm calculator/target/wasm32v1-none/release/calculator.wasm --network testnet
-
-# Contract ID ile frontend aç
-http://localhost:8000/?contract=YOUR_CONTRACT_ID
-```
-
-### 3. Mainnet Production
-
-```bash
-# Production build
-cd calculator/contracts/calculator
-stellar contract build --profile release-with-logs
-
-# Deploy
-stellar contract deploy --wasm target/wasm32v1-none/release/calculator.wasm --network mainnet
-```
-
-## 🤝 Katkıda Bulunma
-
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/AmazingFeature`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Add some AmazingFeature'`)
-4. Push edin (`git push origin feature/AmazingFeature`)
-5. Pull Request açın
-
-## 📝 Lisans
-
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
-
-## 🙏 Teşekkürler
-
-- Stellar Development Foundation
-- Soroban Team
-- Freighter Wallet Team
-- Stellar Bootcamp
-
-## 📞 İletişim
-
-Sorularınız için:
-- GitHub Issues
-- Stellar Discord
-- Community forums
-
-## 🔗 Faydalı Linkler
-
-- [Soroban Docs](https://soroban.stellar.org)
+- [Soroban Documentation](https://soroban.stellar.org)
 - [Freighter Wallet](https://freighter.app)
 - [Stellar Network](https://stellar.org)
 - [Smart Contract Basics](https://soroban.stellar.org/docs/basic-tutorials/hello-world)
+- [DEPLOYMENT_INFO.md](./DEPLOYMENT_INFO.md) - Detailed deployment information
 
-## 📈 Roadmap
+## 📚 Additional Documentation
 
-- [ ] Admin panel
-- [ ] Transaction history tracking
-- [ ] Multi-contract support
-- [ ] API integration
-- [ ] Mobile app
+- [DEPLOYMENT_INFO.md](./DEPLOYMENT_INFO.md) - Complete deployment guide and contract IDs
+- [BUILD_SUMMARY.md](./BUILD_SUMMARY.md) - Build summary and statistics
+- [QUICKSTART.md](./QUICKSTART.md) - Quick start guide
+- [calculator/README.md](./calculator/README.md) - Contract documentation
+- [frontend/README.md](./frontend/README.md) - Frontend documentation
 
 ---
 
-**Built with ❤️ for Stellar Bootcamp**
-
-*Soroban blockchain üzerinde matematik işlemleri yapmanın en kolay yolu*
-
+**Built for Stellar Bootcamp 🚀 Fully On-Chain | No Local Dependencies | Community-Driven**
